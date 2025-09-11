@@ -25,3 +25,8 @@ Thumbs.db
 poetry.lock
 .pytest_cache/
 .coverage
+
+.env
+*.sqlite3
+__pycache__/
+*.pyc
