@@ -1,54 +1,23 @@
-<!doctype html>
-<html lang="ru">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Skystore - {{ product.name }}</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        .product-image {
-            max-height: 400px;
-            object-fit: cover;
-        }
-        .price-tag {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #28a745;
-        }
-        .back-link {
-            text-decoration: none;
-        }
-    </style>
-</head>
-<body>
-    <!-- Навигация -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="{% url 'catalog:home' %}">
-                <i class="bi bi-cloud-fill me-2"></i>SkyStore
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'catalog:home' %}">
-                            <i class="bi bi-house me-1"></i>Главная
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'catalog:contacts' %}">
-                            <i class="bi bi-telephone me-1"></i>Контакты
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+{% extends 'base.html' %}
 
+{% block title %}Skystore - {{ product.name }}{% endblock %}
+
+{% block extra_css %}
+.product-image {
+    max-height: 400px;
+    object-fit: cover;
+}
+.price-tag {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #28a745;
+}
+.back-link {
+    text-decoration: none;
+}
+{% endblock %}
+
+{% block content %}
     <!-- Детальная информация о товаре -->
     <section class="py-5">
         <div class="container">
@@ -108,23 +77,4 @@
             </div>
         </div>
     </section>
-
-    <!-- Футер -->
-    <footer class="bg-dark text-white py-4">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <p class="mb-0">&copy; 2024 SkyStore. Все права защищены.</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <a href="{% url 'catalog:home' %}" class="text-white text-decoration-none me-3">Главная</a>
-                    <a href="{% url 'catalog:contacts' %}" class="text-white text-decoration-none">Контакты</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+{% endblock %}
