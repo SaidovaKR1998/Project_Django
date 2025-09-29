@@ -94,7 +94,7 @@
                                     <small class="text-muted">{{ product.created_at|date:"d.m.Y" }}</small>
                                 </div>
                                 <div class="d-grid gap-2">
-                                    <a href="{% url 'catalog:product_detail' product.id %}" class="btn btn-outline-primary">
+                                    <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-outline-primary">
                                         Подробнее
                                     </a>
                                     <button class="btn btn-primary">
