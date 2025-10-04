@@ -1,0 +1,54 @@
+{% extends 'catalog/includes/base.html' %}
+
+{% block title %}{{ product.name }} - SkyStore{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'catalog:home' %}">Главная</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'catalog:product_list' %}">Все товары</a></li>
+                <li class="breadcrumb-item active">{{ product.name }}</li>
+            </ol>
+        </nav>
+
+        <h1 class="mb-3">{{ product.name }}</h1>
+        <p class="lead">{{ product.description }}</p>
+
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-info-circle me-2"></i>Информация о товаре</h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Цена:</span>
+                        <strong class="text-primary">{{ product.price }} руб.</strong>
+                    </li>
+                    {% if product.category %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Категория:</span>
+                        <span>{{ product.category.name }}</span>
+                    </li>
+                    {% endif %}
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Дата создания:</span>
+                        <span>{{ product.created_at|date:"d.m.Y H:i" }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-warning">
+        <i class="bi bi-pencil me-1"></i>Редактировать
+    </a>
+    <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-danger">
+        <i class="bi bi-trash me-1"></i>Удалить
+    </a>
+    <a href="{% url 'catalog:product_list' %}" class="btn btn-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Назад к списку
+    </a>
+</div>
+{% endblock %}
