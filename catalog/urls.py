@@ -3,7 +3,8 @@ from catalog.apps import CatalogConfig
 from .views import (
     HomeView, ContactsView, ProductListView,
     ProductDetailView, ProductCreateView,
-    ProductUpdateView, ProductDeleteView
+    ProductUpdateView, ProductDeleteView,
+    publish_product, unpublish_product  # ДОБАВИЛИ НОВЫЕ ФУНКЦИИ
 )
 
 app_name = CatalogConfig.name
@@ -19,4 +20,8 @@ urlpatterns = [
     path('product/create/', ProductCreateView.as_view(), name='product_create'),
     path('product/<int:pk>/update/', ProductUpdateView.as_view(), name='product_update'),
     path('product/<int:pk>/delete/', ProductDeleteView.as_view(), name='product_delete'),
+
+    # НОВЫЕ ПУТИ ДЛЯ ПУБЛИКАЦИИ И СНЯТИЯ С ПУБЛИКАЦИИ
+    path('product/<int:pk>/publish/', publish_product, name='publish_product'),
+    path('product/<int:pk>/unpublish/', unpublish_product, name='unpublish_product'),
 ]
