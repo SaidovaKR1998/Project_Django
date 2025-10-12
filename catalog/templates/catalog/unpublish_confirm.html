@@ -1,0 +1,13 @@
+{% extends 'includes/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1>Снять с публикации</h1>
+    <p>Вы уверены, что хотите снять с публикации "{{ product.name }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-warning">Да, снять</button>
+        <a href="{% url 'product_list' %}" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+{% endblock %}
