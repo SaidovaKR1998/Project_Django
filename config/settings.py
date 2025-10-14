@@ -49,6 +49,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'catalog.context_processors.categories_context',
             ],
         },
     },
@@ -120,3 +121,44 @@ DEFAULT_FROM_EMAIL = 'noreply@skystore.com'
 # EMAIL_USE_SSL = True
 # EMAIL_HOST_USER = 'your_email@yandex.ru'
 # EMAIL_HOST_PASSWORD = 'your_password'
+
+# ⭐⭐⭐ ДОБАВЛЯЕМ НАСТРОЙКИ КЕШИРОВАНИЯ ⭐⭐⭐
+
+# Временный файловый кеш (работает без Redis)
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR, 'django_cache'),  # папка для кеша
+    }
+}
+
+# Время жизни кеша в секундах (15 минут)
+CACHE_TTL = 60 * 15
+
+# Опционально: использование кеша для сессий
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+# SESSION_CACHE_ALIAS = 'default'
+
+# ⭐⭐⭐ КОММЕНТИРУЕМ НАСТРОЙКИ REDIS ДЛЯ БУДУЩЕГО ИСПОЛЬЗОВАНИЯ ⭐⭐⭐
+
+"""
+# Настройки Redis для продакшена (раскомментировать после установки Redis)
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        },
+        'KEY_PREFIX': 'django_cache'
+    }
+}
+
+# Альтернатива: локальный memory cache (для разработки)
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
+"""
