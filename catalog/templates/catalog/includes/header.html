@@ -1,0 +1,107 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'catalog:home' %}">
+            <i class="bi bi-cloud-fill me-2"></i>SkyStore
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
+                       href="{% url 'catalog:home' %}">
+                        <i class="bi bi-house me-1"></i>Главная
+                    </a>
+                </li>
+
+                <!-- ДОБАВЛЯЕМ МЕНЮ КАТЕГОРИЙ -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {% if 'category' in request.resolver_match.url_name %}active{% endif %}"
+                       href="#" id="navbarCategories" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-tags me-1"></i>Категории
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarCategories">
+                        {% for category in categories %}
+                        <li>
+                            <a class="dropdown-item {% if request.resolver_match.kwargs.category_slug == category.slug %}active{% endif %}"
+                               href="{% url 'catalog:category_products' category.slug %}">
+                                {{ category.name }}
+                                <span class="badge bg-secondary float-end">{{ category.product_set.count }}</span>
+                            </a>
+                        </li>
+                        {% empty %}
+                        <li><a class="dropdown-item text-muted" href="#">Нет категорий</a></li>
+                        {% endfor %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'catalog:product_list' %}">
+                                <i class="bi bi-grid me-1"></i>Все товары
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}"
+                       href="{% url 'catalog:product_list' %}">
+                        <i class="bi bi-grid me-1"></i>Все товары
+                    </a>
+                </li>
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'product_create' %}active{% endif %}"
+                       href="{% url 'catalog:product_create' %}">
+                        <i class="bi bi-plus-circle me-1"></i>Добавить товар
+                    </a>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link {% if request.resolver_match.url_name == 'contacts' %}active{% endif %}"
+                       href="{% url 'catalog:contacts' %}">
+                        <i class="bi bi-telephone me-1"></i>Контакты
+                    </a>
+                </li>
+            </ul>
+            <ul class="navbar-nav">
+                {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle me-1"></i>{{ user.email }}
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">
+                            <i class="bi bi-person me-2"></i>Профиль
+                        </a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <form method="post" action="{% url 'users:logout' %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Выйти
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'users:login' %}">
+                        <i class="bi bi-box-arrow-in-right me-1"></i>Войти
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'users:register' %}">
+                        <i class="bi bi-person-plus me-1"></i>Регистрация
+                    </a>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class="btn btn-primary ms-2" href="#">
+                        <i class="bi bi-cart me-1"></i>Корзина
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

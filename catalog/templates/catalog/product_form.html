@@ -1,0 +1,182 @@
+{% extends 'catalog/includes/base.html' %}
+
+{% block title %}
+    {% if object %}Редактирование {{ object.name }} - SkyStore{% else %}Создание товара - SkyStore{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-8">
+        <!-- Хлебные крошки -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'catalog:home' %}" class="text-decoration-none">Главная</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'catalog:product_list' %}" class="text-decoration-none">Все товары</a></li>
+                <li class="breadcrumb-item active">{% if object %}Редактирование{% else %}Создание{% endif %}</li>
+            </ol>
+        </nav>
+
+        <!-- Заголовок -->
+        <div class="text-center mb-5">
+            <h1 class="display-6 fw-bold text-primary">
+                <i class="bi bi-{% if object %}pencil-square{% else %}plus-circle{% endif %} me-3"></i>
+                {% if object %}Редактирование товара{% else %}Создание нового товара{% endif %}
+            </h1>
+            <p class="lead text-muted">
+                {% if object %}
+                    Внесите необходимые изменения в карточку товара
+                {% else %}
+                    Заполните информацию о новом товаре
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- Карточка формы -->
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-primary text-white py-3">
+                <h2 class="h4 mb-0 text-center">
+                    <i class="bi bi-card-checklist me-2"></i>
+                    Основная информация
+                </h2>
+            </div>
+
+            <div class="card-body p-4">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Общие ошибки формы -->
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger d-flex align-items-center">
+                        <i class="bi bi-exclamation-triangle-fill me-3 fs-5"></i>
+                        <div>
+                            <h5 class="alert-heading mb-2">Ошибка заполнения формы</h5>
+                            {{ form.non_field_errors }}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Основные поля -->
+                    <div class="row">
+                        <!-- Название -->
+                        <div class="col-md-6 mb-4">
+                            <label for="{{ form.name.id_for_label }}" class="form-label required-field">
+                                <i class="bi bi-tag me-2"></i>Название товара
+                            </label>
+                            {{ form.name }}
+                            {% if form.name.help_text %}
+                            <div class="form-text">{{ form.name.help_text }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Цена -->
+                        <div class="col-md-6 mb-4">
+                            <label for="{{ form.price.id_for_label }}" class="form-label required-field">
+                                <i class="bi bi-currency-dollar me-2"></i>Цена
+                            </label>
+                            <div class="input-group">
+                                {{ form.price }}
+                                <span class="input-group-text">руб.</span>
+                            </div>
+                            {% if form.price.help_text %}
+                            <div class="form-text">{{ form.price.help_text }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Описание -->
+                    <div class="mb-4">
+                        <label for="{{ form.description.id_for_label }}" class="form-label required-field">
+                            <i class="bi bi-text-paragraph me-2"></i>Описание товара
+                        </label>
+                        {{ form.description }}
+                        <div class="form-text">
+                            Опишите основные характеристики и преимущества товара
+                        </div>
+                    </div>
+
+                    <!-- Дополнительные поля (категория, изображение и т.д.) -->
+                    {% for field in form %}
+                        {% if field.name not in 'name,description,price' %}
+                        <div class="mb-4">
+                            <label for="{{ field.id_for_label }}" class="form-label {% if field.field.required %}required-field{% endif %}">
+                                {{ field.label }}
+                            </label>
+                            {{ field }}
+                            {% if field.help_text %}
+                            <div class="form-text">{{ field.help_text }}</div>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+
+                    <!-- Кнопки действий -->
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-5 pt-3 border-top">
+                        <a href="{% if object %}{% url 'catalog:product_detail' object.pk %}{% else %}{% url 'catalog:product_list' %}{% endif %}"
+                           class="btn btn-lg btn-outline-secondary me-md-2">
+                            <i class="bi bi-arrow-left me-2"></i>Отмена
+                        </a>
+                        <button type="submit" class="btn btn-lg btn-success btn-form">
+                            <i class="bi bi-check2-circle me-2"></i>
+                            {% if object %}Сохранить изменения{% else %}Создать товар{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Информационная панель -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="alert alert-info">
+                    <h5 class="alert-heading"><i class="bi bi-info-circle me-2"></i>Подсказки</h5>
+                    <ul class="mb-0 ps-3">
+                        <li>Название должно быть уникальным и информативным</li>
+                        <li>Используйте подробное описание для лучшего понимания</li>
+                        <li>Указывайте реальную цену товара</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="alert alert-warning">
+                    <h5 class="alert-heading"><i class="bi bi-exclamation-triangle me-2"></i>Ограничения</h5>
+                    <ul class="mb-0 ps-3">
+                        <li>Запрещены слова: казино, криптовалюта и др.</li>
+                        <li>Цена не может быть отрицательной или нулевой</li>
+                        <li>Все обязательные поля отмечены звёздочкой (*)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript для улучшения UX -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Добавляем валидацию в реальном времени
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Сохранение...';
+            submitBtn.disabled = true;
+        });
+    });
+
+    // Подсветка обязательных полей
+    const requiredFields = document.querySelectorAll('.required-field');
+    requiredFields.forEach(field => {
+        const input = document.querySelector('#' + field.getAttribute('for'));
+        if (input) {
+            input.addEventListener('blur', function() {
+                if (!this.value.trim()) {
+                    this.classList.add('is-invalid');
+                } else {
+                    this.classList.remove('is-invalid');
+                }
+            });
+        }
+    });
+});
+</script>
+{% endblock %}
