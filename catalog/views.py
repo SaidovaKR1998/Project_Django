@@ -6,6 +6,14 @@ from django.contrib.auth.decorators import login_required, permission_required
 from .models import Product
 from .forms import ProductForm
 
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from django.views.generic import DetailView
+
+from .models import Category
+from .services import get_products_by_category, get_categories_with_products
+from .services import get_all_published_products, get_featured_products
+
 class HomeView(ListView):
     model = Product
     template_name = 'catalog/home.html'
@@ -17,10 +25,30 @@ class HomeView(ListView):
 class ContactsView(TemplateView):
     template_name = 'catalog/contacts.html'
 
+
 class ProductListView(ListView):
     model = Product
     template_name = 'catalog/product_list.html'
     context_object_name = 'products'
+    paginate_by = 12
+
+    def get_queryset(self):
+        return get_all_published_products()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['featured_products'] = get_featured_products()
+        return context
+
+
+# Кешируем главную страницу на 5 минут
+@cache_page(60 * 5)
+def home(request):
+    featured_products = get_featured_products()
+    context = {
+        'featured_products': featured_products,
+    }
+    return render(request, 'catalog/home.html', context)
 
 class ProductDetailView(DetailView):
     model = Product
@@ -82,3 +110,43 @@ def unpublish_product(request, pk):
         product.save()
         return redirect('catalog:product_list')
     return render(request, 'catalog/unpublish_confirm.html', {'product': product})
+
+# Кешируем страницу продукта на 15 минут
+@method_decorator(cache_page(60 * 15), name='dispatch')
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'catalog/product_detail.html'
+    context_object_name = 'product'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Дополнительные данные, если нужны
+        return context
+
+
+def category_products(request, category_slug):
+    """
+    Представление для отображения продуктов по категории
+    """
+    products = get_products_by_category(category_slug)
+    categories = get_categories_with_products()
+
+    # Получаем текущую категорию для отображения названия
+    current_category = None
+    if products.exists():
+        current_category = products.first().category
+    else:
+        # Если продуктов нет, все равно пытаемся получить категорию
+        try:
+            current_category = Category.objects.get(slug=category_slug)
+        except Category.DoesNotExist:
+            current_category = None
+
+    context = {
+        'products': products,
+        'categories': categories,
+        'current_category': current_category,
+        'current_category_slug': category_slug,
+    }
+
+    return render(request, 'catalog/category_products.html', context)
