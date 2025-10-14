@@ -14,6 +14,34 @@
                         <i class="bi bi-house me-1"></i>Главная
                     </a>
                 </li>
+
+                <!-- ДОБАВЛЯЕМ МЕНЮ КАТЕГОРИЙ -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {% if 'category' in request.resolver_match.url_name %}active{% endif %}"
+                       href="#" id="navbarCategories" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-tags me-1"></i>Категории
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarCategories">
+                        {% for category in categories %}
+                        <li>
+                            <a class="dropdown-item {% if request.resolver_match.kwargs.category_slug == category.slug %}active{% endif %}"
+                               href="{% url 'catalog:category_products' category.slug %}">
+                                {{ category.name }}
+                                <span class="badge bg-secondary float-end">{{ category.product_set.count }}</span>
+                            </a>
+                        </li>
+                        {% empty %}
+                        <li><a class="dropdown-item text-muted" href="#">Нет категорий</a></li>
+                        {% endfor %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="{% url 'catalog:product_list' %}">
+                                <i class="bi bi-grid me-1"></i>Все товары
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name == 'product_list' %}active{% endif %}"
                        href="{% url 'catalog:product_list' %}">
